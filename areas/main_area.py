@@ -4,7 +4,7 @@ from boxes.blue_area import BlueArea
 from boxes.output_area import OutputArea
 from boxes.selection_area import SelectionArea
 from parts.add_button import AddButton
-from parts.scrollable_frame import ScrollableFrame
+from parts.area_label import AreaLabel
 from parts.scrollable_frame import ScrollableFrame
 
 
@@ -17,27 +17,14 @@ class MainArea:
         self.create_widgets()
 
     def create_widgets(self) -> None:
-        self.create_area_label("旧ファイル")
-        self.create_scrollable_area()
-        AddButton(self.root, command=self.add_selection_area)
-        self.create_area_label("新ファイル")
-        self.create_blue_area()
-        self.add_selection_area()
-        self.add_output_area()
-
-    def add_output_area(self) -> None:
-        OutputArea(self.blue_area)
-
-    def create_scrollable_area(self) -> None:
+        AreaLabel(self.root, "旧ファイル")
         self.scrollable_frame = ScrollableFrame(self.root)
         self.scrollable_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
-    def create_blue_area(self) -> None:
+        AddButton(self.root, command=self.add_selection_area)
+        AreaLabel(self.root, "新ファイル")
         self.blue_area = BlueArea(self.root)
-
-    def create_area_label(self, text) -> None:
-        self.area_label = tk.Label(self.root, text=text, anchor=tk.W)
-        self.area_label.pack(side=tk.TOP, padx=10, pady=10, anchor=tk.W)
+        self.add_selection_area()
+        OutputArea(self.blue_area)
 
     def add_selection_area(self) -> None:
         new_area_frame = SelectionArea(

@@ -5,14 +5,9 @@ from typing import List
 
 class FileEntry(tk.Frame):
     def __init__(
-        self,
-        parent: tk.Widget,
-        label_text: str,
-        filetypes: List[tuple],
-        *args,
-        **kwargs,
+        self, parent: tk.Widget, label_text: str, filetypes: List[tuple]
     ) -> None:
-        super().__init__(parent, *args, **kwargs)
+        super().__init__(parent)
         self.file_path_var = tk.StringVar()
         self.label = tk.Label(self, text=label_text, width=10)
         self.label.pack(side=tk.LEFT, padx=10, pady=5, anchor=tk.W)

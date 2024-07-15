@@ -2,8 +2,8 @@ import tkinter as tk
 
 
 class ScrollableFrame(tk.Frame):
-    def __init__(self, parent: tk.Widget, *args, **kwargs) -> None:
-        super().__init__(parent, *args, **kwargs)
+    def __init__(self, parent: tk.Widget) -> None:
+        super().__init__(parent)
         self.canvas = tk.Canvas(self)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.scrollbar = tk.Scrollbar(
