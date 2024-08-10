@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog, ttk
 
+from tkinterdnd2 import DND_FILES, TkinterDnD
+
 
 class FileEntry(tk.Frame):
     def __init__(self, parent, app, number, *args, **kwargs):
@@ -27,9 +29,14 @@ class FileEntry(tk.Frame):
         )
         self.remove_button.pack(side=tk.LEFT, padx=(5, 5))
 
+        # ドラッグアンドドロップの設定
+        self.drop_target_register(DND_FILES)
+        self.dnd_bind("<<Drop>>", self.drop_file)
+
     def browse_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
         if file_path:
+            self.file_path.delete(0, tk.END)  # 古いパスをクリア
             self.file_path.insert(0, file_path)
 
     def clear_file(self):
@@ -41,15 +48,19 @@ class FileEntry(tk.Frame):
     def remove_file_entry(self):
         self.app.remove_file_entry(self)
 
+    def drop_file(self, event):
+        files = self.app.tk.splitlist(event.data)
+        self.app.handle_dropped_files(self, files)
 
-class App(tk.Tk):
+
+class App(TkinterDnD.Tk):
     def __init__(self):
         super().__init__()
 
         self.title("Tkinter Tool")
         self.setup_ui()
         self.file_entries = []
-        self.add_file_entry()
+        self.create_file_entry()
 
     def setup_ui(self):
         # Old File Title
@@ -87,12 +98,13 @@ class App(tk.Tk):
         self.inner_frame = ttk.Frame(self.canvas)
         self.canvas.create_window((0, 0), window=self.inner_frame, anchor="nw")
 
-    def add_file_entry(self):
+    def create_file_entry(self):
         number = len(self.file_entries) + 1
         entry = FileEntry(self.inner_frame, self, number)
         entry.pack(fill=tk.X, pady=2)
         self.file_entries.append(entry)
         self.update_numbers()
+        return entry  # 新しいエントリーを返す
 
     def insert_file_entry(self, current_entry):
         index = self.file_entries.index(current_entry) + 1
@@ -102,8 +114,6 @@ class App(tk.Tk):
 
         self.repack_file_entries()
         self.update_numbers()
-
-        print(">>>", self.file_entries)
 
     def remove_file_entry(self, entry):
         entry.pack_forget()
@@ -121,6 +131,21 @@ class App(tk.Tk):
     def update_numbers(self):
         for i, entry in enumerate(self.file_entries):
             entry.number.config(text=f"No. {i + 1}")
+
+    def handle_dropped_files(self, target_entry, files):
+        # ドロップされたエントリーのインデックスを取得
+        index = self.file_entries.index(target_entry)
+
+        for file_path in files:
+            if index < len(self.file_entries):
+                entry = self.file_entries[index]
+                entry.file_path.delete(0, tk.END)  # 古いパスをクリア
+                entry.file_path.insert(0, file_path)
+            else:
+                entry = self.create_file_entry()
+                entry.file_path.delete(0, tk.END)  # 古いパスをクリア
+                entry.file_path.insert(0, file_path)
+            index += 1
 
 
 if __name__ == "__main__":
