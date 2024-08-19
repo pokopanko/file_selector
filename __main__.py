@@ -1,153 +1,90 @@
 import tkinter as tk
-from tkinter import filedialog, ttk
-
-from tkinterdnd2 import DND_FILES, TkinterDnD
 
 
-class FileEntry(tk.Frame):
-    def __init__(self, parent, app, number, *args, **kwargs):
-        super().__init__(parent, *args, **kwargs)
-        self.app = app  # 親アプリケーションの参照を保持
+class fileEntry:
+    def __init__(self, root):
+        self.root = root
+        self.create_widget()
+        self.place_widget()
 
-        self.number = tk.Label(self, text=f"No. {number}")
-        self.number.pack(side=tk.LEFT)
+    def create_widget(self):
+        # Create the frame for fileEntry section
+        self.file_frame = tk.Frame(self.root)
 
-        self.file_path = tk.Entry(self, width=50)
-        self.file_path.pack(side=tk.LEFT, padx=(5, 5))
-
-        self.browse_button = tk.Button(self, text="参照", command=self.browse_file)
-        self.browse_button.pack(side=tk.LEFT, padx=(5, 5))
-
-        self.clear_button = tk.Button(self, text="クリア", command=self.clear_file)
-        self.clear_button.pack(side=tk.LEFT, padx=(5, 5))
-
-        self.add_button = tk.Button(self, text="追加", command=self.add_file_entry)
-        self.add_button.pack(side=tk.LEFT, padx=(5, 5))
-
-        self.remove_button = tk.Button(
-            self, text="削除", command=self.remove_file_entry
+        # Create widgets for the fileEntry section
+        self.label = tk.Label(self.file_frame, text="ラベル")
+        self.entry = tk.Entry(self.file_frame)
+        self.button_a = tk.Button(
+            self.file_frame, text="ボタンA", command=self.on_button_a_click
         )
-        self.remove_button.pack(side=tk.LEFT, padx=(5, 5))
+        self.button_b = tk.Button(self.file_frame, text="ボタンB")
 
-        # ドラッグアンドドロップの設定
-        self.drop_target_register(DND_FILES)
-        self.dnd_bind("<<Drop>>", self.drop_file)
+    def place_widget(self):
+        # Pack the file_frame
+        self.file_frame.pack()
 
-    def browse_file(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
-        if file_path:
-            self.file_path.delete(0, tk.END)  # 古いパスをクリア
-            self.file_path.insert(0, file_path)
+        # Place widgets in the file_frame
+        self.label.pack(side=tk.LEFT, padx=5, pady=5)
+        self.entry.pack(side=tk.LEFT, padx=5, pady=5)
+        self.button_a.pack(side=tk.LEFT, padx=5, pady=5)
+        self.button_b.pack(side=tk.LEFT, padx=5, pady=5)
 
-    def clear_file(self):
-        self.file_path.delete(0, tk.END)
-
-    def add_file_entry(self):
-        self.app.insert_file_entry(self)
-
-    def remove_file_entry(self):
-        self.app.remove_file_entry(self)
-
-    def drop_file(self, event):
-        files = self.app.tk.splitlist(event.data)
-        self.app.handle_dropped_files(self, files)
+    def on_button_a_click(self):
+        print("ボタンAが押されました")
 
 
-class App(TkinterDnD.Tk):
-    def __init__(self):
-        super().__init__()
+class fileEntry2(fileEntry):
+    def __init__(self, root):
+        super().__init__(root)
+        # Additional initialization if needed
 
-        self.title("Tkinter Tool")
-        self.setup_ui()
-        self.file_entries = []
-        self.create_file_entry()
+    def create_widget(self):
+        # Create additional frames
+        self.left_frame = tk.Frame(self.root)
+        self.center_frame = tk.Frame(self.root)
+        self.right_frame = tk.Frame(self.root)
 
-    def setup_ui(self):
-        # Old File Title
-        self.old_file_title = tk.Label(self, text="旧ファイル", anchor="w")
-        self.old_file_title.pack(fill=tk.X)
+        # Create widgets for the additional frames
+        self.button_x = tk.Button(self.left_frame, text="ボタンX")
+        self.button_y = tk.Button(self.left_frame, text="ボタンY")
+        self.label_t = tk.Label(self.center_frame, text="ラベルT")
+        self.button_1 = tk.Button(self.right_frame, text="ボタン1")
+        self.button_2 = tk.Button(self.right_frame, text="ボタン2")
 
-        # Old File Area
-        self.old_file_area = tk.Frame(self, bd=2, relief=tk.SOLID)
-        self.old_file_area.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-
-        # TXT File Title
-        self.txt_file_title = tk.Label(
-            self.old_file_area, text="TXTファイル", anchor="w"
+        # 上書き
+        self.file_frame = tk.Frame(self.center_frame)
+        self.label = tk.Label(self.file_frame, text="ラベル")
+        self.entry = tk.Entry(self.file_frame)
+        self.button_a = tk.Button(
+            self.file_frame, text="ボタンA", command=self.on_button_a_click
         )
-        self.txt_file_title.pack(fill=tk.X)
+        self.button_b = tk.Button(self.file_frame, text="ボタンB")
 
-        # Scrollable Area
-        self.scrollable_frame = ttk.Frame(self.old_file_area)
-        self.scrollable_frame.pack(fill=tk.BOTH, expand=True)
+    def place_widget(self):
+        # Pack the frames
+        self.left_frame.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.Y)
+        self.center_frame.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.Y)
+        self.right_frame.pack(side=tk.LEFT, padx=5, pady=5, fill=tk.Y)
 
-        self.canvas = tk.Canvas(self.scrollable_frame)
-        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # Place buttons X and Y in the left frame
+        self.button_x.pack(side=tk.LEFT, padx=5, pady=5)
+        self.button_y.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self.scrollbar = ttk.Scrollbar(
-            self.scrollable_frame, orient="vertical", command=self.canvas.yview
-        )
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        # Place fileEntry widgets in the center frame
+        super().place_widget()
 
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
-        self.canvas.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")),
-        )
+        # Place label_t in the center frame
+        self.label_t.pack(side=tk.BOTTOM, padx=5, pady=5, anchor=tk.W)
 
-        self.inner_frame = ttk.Frame(self.canvas)
-        self.canvas.create_window((0, 0), window=self.inner_frame, anchor="nw")
-
-    def create_file_entry(self):
-        number = len(self.file_entries) + 1
-        entry = FileEntry(self.inner_frame, self, number)
-        entry.pack(fill=tk.X, pady=2)
-        self.file_entries.append(entry)
-        self.update_numbers()
-        return entry  # 新しいエントリーを返す
-
-    def insert_file_entry(self, current_entry):
-        index = self.file_entries.index(current_entry) + 1
-        number = len(self.file_entries) + 1
-        entry = FileEntry(self.inner_frame, self, number)
-        self.file_entries.insert(index, entry)
-
-        self.repack_file_entries()
-        self.update_numbers()
-
-    def remove_file_entry(self, entry):
-        entry.pack_forget()
-        entry.destroy()
-        self.file_entries.remove(entry)
-        self.update_numbers()
-
-    def repack_file_entries(self):
-        for widget in self.inner_frame.winfo_children():
-            widget.pack_forget()
-
-        for entry in self.file_entries:
-            entry.pack(fill=tk.X, pady=2)
-
-    def update_numbers(self):
-        for i, entry in enumerate(self.file_entries):
-            entry.number.config(text=f"No. {i + 1}")
-
-    def handle_dropped_files(self, target_entry, files):
-        # ドロップされたエントリーのインデックスを取得
-        index = self.file_entries.index(target_entry)
-
-        for file_path in files:
-            if index < len(self.file_entries):
-                entry = self.file_entries[index]
-                entry.file_path.delete(0, tk.END)  # 古いパスをクリア
-                entry.file_path.insert(0, file_path)
-            else:
-                entry = self.create_file_entry()
-                entry.file_path.delete(0, tk.END)  # 古いパスをクリア
-                entry.file_path.insert(0, file_path)
-            index += 1
+        # Place buttons 1 and 2 in the right frame
+        self.button_1.pack(side=tk.LEFT, padx=5, pady=5)
+        self.button_2.pack(side=tk.LEFT, padx=5, pady=5)
 
 
 if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    root = tk.Tk()
+    root.title("Tkinter Pack Example - fileEntry2")
+
+    app = fileEntry2(root)
+
+    root.mainloop()
