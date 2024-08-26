@@ -203,3 +203,35 @@ class App(TkinterDnD.Tk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+# memo
+import tkinter.messagebox as messagebox
+
+def get_field_values():
+    # 各フレームのvar.get()結果をリストに格納
+    pptx_values = [frame.var.get() for frame in [frame1, frame2, frame3, frame4, frame5]]
+    return pptx_values, txt_frame.var.get(), xlsx_frame.var.get()
+
+def validate_fields(pptx_values, txt_value, xlsx_value):
+    empty_fields = []
+    # チェックリストとその条件を定義
+    checks = {
+        "pptx": not any(pptx_values),
+        "txt": not txt_value,
+        "xlsx": not xlsx_value
+    }
+    # 条件に応じてempty_fieldsリストに追加
+    for field, is_empty in checks.items():
+        if is_empty:
+            empty_fields.append(field)
+    return empty_fields
+
+def show_error_message(empty_fields):
+    if empty_fields:
+        message = "空文字がありました\n" + "\n".join(f"・{field}" for field in empty_fields)
+        messagebox.showerror("エラー", message)
+        raise ValueError(message)
+
+# メイン処理
+pptx_values, txt_value, xlsx_value = get_field_values()
+empty_fields = validate_fields(pptx_values, txt_value, xlsx_value)
+show_error_message(empty_fields)
